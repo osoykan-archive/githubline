@@ -15,3 +15,7 @@ https://githubline.herokuapp.com/api/contributions?username=osoykan&years=2015,2
 It just gives an `svg` image to put your profile readme or to see how amazing things you've done until now.
 
 ![osoykan](https://githubline.herokuapp.com/api/contributions?username=osoykan&years=2014,2015,2016,2017,2018,2019,2020)
+
+## Contribution
+
+Feel free to open a PR to improve anything!
