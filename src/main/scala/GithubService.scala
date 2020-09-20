@@ -208,8 +208,8 @@ final case class Line(username: String, xData: Array[Int], yData: Array[Int]) {
     // Axis
     style.setAxisTickLabelsColor(Color.BLACK)
     style.setYAxisLabelAlignment(Styler.TextAlignment.Right)
-    style.setXAxisTickMarkSpacingHint(math.round(width / xData.size))
-    style.setYAxisTickMarkSpacingHint(math.round(height / yData.size))
+    style.setXAxisTickMarkSpacingHint(width / (xData.length * 50 / 100))
+    style.setYAxisTickMarkSpacingHint(50)
 
     style.setYAxisMin(yData.minBy(x => x))
     style.setXAxisMin(xData.minBy(x => x))
