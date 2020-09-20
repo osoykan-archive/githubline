@@ -23,7 +23,7 @@ import org.knowm.xchart.style.markers.SeriesMarkers
 import org.knowm.xchart.{VectorGraphicsEncoder, XYChartBuilder}
 import spray.json.{DefaultJsonProtocol, RootJsonFormat}
 
-import scala.concurrent.duration.{Duration, DurationInt, FiniteDuration}
+import scala.concurrent.duration.{Duration, DurationInt}
 import scala.concurrent.{Await, ExecutionContext, Future, Promise}
 import scala.util.{Failure, Success, Try}
 
@@ -117,7 +117,8 @@ class GithubService(val token: String)(implicit system: ActorSystem, executionCo
               extractRequestContext { ctx =>
                 parameters(Symbol("username").as[String], Symbol("years").as[Array[Int]]) { (username, years) =>
                   require(username.length > 0, "Username can not be empty")
-                  require(years.min >= 2008 || years.max < DateTime.now.getYear, "The provided years should be in between 2008 and this year")
+                  require(!(years.min < 2008), "The provided years should be in between 2008 and this year")
+                  require(!(years.max > DateTime.now().getYear), "The provided years should be in between 2008 and this year")
 
                   val key = ctx.request.uri.toString()
 
