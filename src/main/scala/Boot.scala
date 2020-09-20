@@ -23,7 +23,7 @@ object Boot extends App {
     .bindFlow(service.routes)
 
   println(s"Server online at http://localhost:${port}/\nPress RETURN to stop...")
-  StdIn.readLine()
+  StdIn.readChar()
   bindingFuture
     .flatMap(_.unbind()) // trigger unbinding from the port
     .onComplete(_ => system.terminate()) // and shutdown when done
