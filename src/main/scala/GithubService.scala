@@ -230,7 +230,7 @@ final case class ContributionCalendar(totalContributions: Double, weeks: List[We
 
 final case class ContributionsCollection(startedAt: String, contributionYears: List[Double], contributionCalendar: ContributionCalendar)
 
-final case class User(name: String, contributionsCollection: ContributionsCollection)
+final case class User(name: Option[String], contributionsCollection: ContributionsCollection)
 
 final case class Data(user: User)
 
