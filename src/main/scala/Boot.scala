@@ -1,23 +1,24 @@
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
+import akka.http.scaladsl.model.StatusCodes
+import akka.http.scaladsl.server.ExceptionHandler
 
 import scala.concurrent.ExecutionContext
 import scala.io.StdIn
 
-object Boot extends App {
+object Boot extends App with Utilities {
   implicit val system: ActorSystem = ActorSystem("github-contrib-graph")
   implicit val executionContext: ExecutionContext = system.dispatcher
 
   val token = sys.env("GITHUB_TOKEN")
-  if (token.length == 0) {
+  if (token.length == 0)
     throw new RuntimeException("Github token can not be empty! Please create a token with " +
       "user read access and provide it as an environment variable: GITHUB_TOKEN=your_token_here")
-  }
 
   val portEnv = if (sys.env.contains("PORT")) sys.env("PORT") else ""
   val port = if (portEnv.length > 0) portEnv.toInt else 8080
 
-  val service = new GithubService(token)
+  val service = new GithubService(token, exceptionHandler)
   val bindingFuture = Http()
     .newServerAt("0.0.0.0", port)
     .bindFlow(service.routes)
