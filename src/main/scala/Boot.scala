@@ -1,12 +1,9 @@
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.StatusCodes
-import akka.http.scaladsl.server.ExceptionHandler
 
 import scala.concurrent.ExecutionContext
-import scala.io.StdIn
 
-object Boot extends App with Utilities {
+object Boot extends App {
   implicit val system: ActorSystem = ActorSystem("github-contrib-graph")
   implicit val executionContext: ExecutionContext = system.dispatcher
 
@@ -18,14 +15,36 @@ object Boot extends App with Utilities {
   val portEnv = if (sys.env.contains("PORT")) sys.env("PORT") else ""
   val port = if (portEnv.length > 0) portEnv.toInt else 8080
 
-  val service = new GithubService(token, exceptionHandler)
+  val service = new GithubService(token)
   val bindingFuture = Http()
     .newServerAt("0.0.0.0", port)
     .bindFlow(service.routes)
 
+
   println(s"Server online at http://localhost:${port}/\nPress RETURN to stop...")
-  StdIn.readChar()
-  bindingFuture
-    .flatMap(_.unbind()) // trigger unbinding from the port
-    .onComplete(_ => system.terminate()) // and shutdown when done
+
+  waitForShutdownSignal(onShutdown = {
+    bindingFuture
+      .flatMap(_.unbind()) // trigger unbinding from the port
+      .onComplete(_ => system.terminate()) // and shutdown when done
+  })
+
+  println(s"Server is gracefully shut down.")
+
+  private def waitForShutdownSignal(onShutdown: => Unit): Unit = {
+    @volatile var keepRunning = true
+    val currentThread = Thread.currentThread()
+
+    Runtime.getRuntime.addShutdownHook(new Thread() {
+      override def run(): Unit = {
+        keepRunning = false
+        println(s"Server is interrupted, going to shut down...")
+        currentThread.join()
+      }
+    })
+
+    while (keepRunning) {}
+    onShutdown
+  }
 }
+

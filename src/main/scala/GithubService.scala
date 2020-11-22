@@ -2,9 +2,9 @@ import DataRepresentation.ContributionResponse
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.HttpHeader.ParsingResult
-import akka.http.scaladsl.model.{ContentType, ContentTypes, HttpEntity, HttpHeader, HttpMethods, HttpRequest, HttpResponse, MediaTypes}
+import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.directives.CachingDirectives.{alwaysCache, routeCache}
-import akka.http.scaladsl.server.{Directives, ExceptionHandler, RequestContext, Route, StandardRoute}
+import akka.http.scaladsl.server.{Directives, RequestContext, Route, StandardRoute}
 import akka.http.scaladsl.settings.ConnectionPoolSettings
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.scaladsl.Flow
@@ -15,7 +15,7 @@ import scala.concurrent.duration.{Duration, DurationInt}
 import scala.concurrent.{Await, ExecutionContext, Promise}
 import scala.util.Try
 
-class GithubService(val token: String, exceptionHandler: ExceptionHandler)
+class GithubService(val token: String)
                    (implicit system: ActorSystem, executionContext: ExecutionContext) extends Directives with JsonSupport with Utilities {
   require(token != "")
 
