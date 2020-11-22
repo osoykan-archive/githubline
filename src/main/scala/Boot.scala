@@ -19,8 +19,7 @@ object Boot extends App {
   val bindingFuture = Http()
     .newServerAt("0.0.0.0", port)
     .bindFlow(service.routes)
-
-
+  
   println(s"Server online at http://localhost:${port}/\nPress RETURN to stop...")
 
   waitForShutdownSignal(onShutdown = {
