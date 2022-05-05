@@ -6,7 +6,7 @@ version := "0.1"
 
 scalaVersion := "2.13.8"
 packageName in Docker := "githubline"
-dockerBaseImage := "openjdk:19-jdk-alpine"
+dockerBaseImage := "openjdk:8-jre-alpine"
 dockerCommands ++= Seq(
   Cmd("USER", "root"),
   ExecCmd("RUN", "apk", "add", "--no-cache", "bash"),
