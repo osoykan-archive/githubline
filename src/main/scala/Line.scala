@@ -1,14 +1,13 @@
-import java.awt.{BasicStroke, Color}
-import java.io.ByteArrayOutputStream
-
 import org.knowm.xchart.VectorGraphicsEncoder.VectorGraphicsFormat
-import org.knowm.xchart.{VectorGraphicsEncoder, XYChartBuilder}
 import org.knowm.xchart.XYSeries.XYSeriesRenderStyle
-import org.knowm.xchart.style.Styler
 import org.knowm.xchart.style.Styler.{ChartTheme, LegendLayout, LegendPosition}
 import org.knowm.xchart.style.colors.XChartSeriesColors
 import org.knowm.xchart.style.lines.SeriesLines
 import org.knowm.xchart.style.markers.SeriesMarkers
+import org.knowm.xchart.{VectorGraphicsEncoder, XYChartBuilder}
+
+import java.awt.{BasicStroke, Color}
+import java.io.ByteArrayOutputStream
 
 object Line {
   def apply(username: String, xData: Array[Int], yData: Array[Int]): Line = {
@@ -74,13 +73,13 @@ class Line(val username: String, val xData: Array[Int], val yData: Array[Int]) {
 
     // Axis
     style.setAxisTickLabelsColor(Color.BLACK)
-    style.setYAxisLabelAlignment(Styler.TextAlignment.Right)
+    //style.setYAxisLabelAlignment(Styler.TextAlignment.Right)
     val divider = if (xData.length * 0.5 < 1) 1 else (xData.length * 0.5).toInt
     style.setXAxisTickMarkSpacingHint(width / divider)
     style.setYAxisTickMarkSpacingHint(50)
 
-    style.setYAxisMin(yData.minBy(x => x))
-    style.setXAxisMin(xData.minBy(x => x))
+    style.setYAxisMin(yData.minBy(x => x).toDouble)
+    style.setXAxisMin(xData.minBy(x => x).toDouble)
     style.setAntiAlias(true)
 
     val os = new ByteArrayOutputStream()
