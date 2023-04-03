@@ -6,7 +6,7 @@ version := "0.1"
 
 scalaVersion := "3.2.2"
 packageName in Docker := "githubline"
-dockerBaseImage := "temurin:19-jre-alpine"
+dockerBaseImage := "eclipse-temurin:20_36-jre-alpine"
 dockerCommands ++= Seq(
   Cmd("USER", "root"),
   ExecCmd("RUN", "apk", "add", "--no-cache", "bash"),
