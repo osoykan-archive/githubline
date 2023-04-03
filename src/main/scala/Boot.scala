@@ -8,19 +8,19 @@ object Boot extends App {
   implicit val executionContext: ExecutionContext = system.dispatcher
 
   val token = sys.env("GITHUB_TOKEN")
-  if (token.length == 0)
+  if (token.isEmpty)
     throw new RuntimeException("Github token can not be empty! Please create a token with " +
       "user read access and provide it as an environment variable: GITHUB_TOKEN=your_token_here")
 
-  val portEnv = if (sys.env.contains("PORT")) sys.env("PORT") else ""
-  val port = if (portEnv.length > 0) portEnv.toInt else 8080
+  private val portEnv = if (sys.env.contains("PORT")) sys.env("PORT") else ""
+  private val port = if (portEnv.nonEmpty) portEnv.toInt else 8080
 
-  val service = new GithubService(token)
-  val bindingFuture = Http()
+  private val service = new GithubService(token)
+  private val bindingFuture = Http()
     .newServerAt("0.0.0.0", port)
     .bindFlow(service.routes)
   
-  println(s"Server online at http://localhost:${port}/\nPress RETURN to stop...")
+  println(s"Server online at http://localhost:$port/\nPress RETURN to stop...")
 
   waitForShutdownSignal(onShutdown = {
     bindingFuture

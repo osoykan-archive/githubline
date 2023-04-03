@@ -42,14 +42,14 @@ class GithubService(val token: String)
       })
   }
 
-  private def handleGetSvg = get(extractRequestContext { ctx =>
+  private def handleGetSvg: Route = get(extractRequestContext { ctx =>
     parameters(Symbol("username").as[String], Symbol("years").as[Array[Int]]) {
       (username, years) => handleSvgRequest(ctx.request.uri.toString(), username, years)
     }
   })
 
   private def handleSvgRequest(key: String, username: String, years: Array[Int]): StandardRoute = {
-    require(username.length > 0, "Username can not be empty")
+    require(username.nonEmpty, "Username can not be empty")
     require(!(years.min < 2008), "The provided years should be in between 2008 and this year")
     require(!(years.max > DateTime.now().getYear), "The provided years should be in between 2008 and this year")
 
@@ -66,19 +66,18 @@ class GithubService(val token: String)
   private def getContributionsAndUpdateCache(queue: RequestQueue)(username: String, years: Array[Int], key: String) = {
     val contributions = getContributions(queue)(username, years)
     val bytes = timed("SVG Image Creation") {
-      Line(username, contributions._1.toArray, contributions._2.toArray).getBytes
-    }
+      Line(username, contributions._1.toArray, contributions._2.toArray).draw()
+    }.toByteArray
     cache.put(key, bytes)
     bytes
   }
 
   private def getContributions(queue: RequestQueue)(userName: String, years: Array[Int]): (List[Int], List[Int]) = {
 
-    def graphqlQuery(name: String, year: Int): String = {
+    def graphqlQuery(name: String, year: Int): String =
       s"""{
          |  "query": "query {  user(login: \\"$name\\") { name  contributionsCollection(from: \\"$year-01-01T00:00:00\\" to:\\"$year-12-31T23:59:59\\" ) {startedAt contributionYears  contributionCalendar { totalContributions weeks { contributionDays {contributionCount date} } } } } }"
          |}""".stripMargin
-    }
 
     val header = HttpHeader.parse("Authorization", s"Bearer $token") match {
       case ParsingResult.Ok(header, _) => header

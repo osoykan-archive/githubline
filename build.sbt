@@ -4,9 +4,9 @@ name := "githubline"
 
 version := "0.1"
 
-scalaVersion := "2.13.8"
+scalaVersion := "3.2.2"
 packageName in Docker := "githubline"
-dockerBaseImage := "openjdk:8-jre-alpine"
+dockerBaseImage := "temurin:19-jre-alpine"
 dockerCommands ++= Seq(
   Cmd("USER", "root"),
   ExecCmd("RUN", "apk", "add", "--no-cache", "bash"),
@@ -14,16 +14,16 @@ dockerCommands ++= Seq(
 
 enablePlugins(JavaAppPackaging)
 
-val AkkaVersion = "2.6.19"
-val AkkaHttpVersion = "10.2.9"
+val AkkaVersion = "2.8.0"
+val AkkaHttpVersion = "10.5.0"
 
 libraryDependencies ++= Seq(
-  "com.typesafe.akka" %% "akka-stream" % AkkaVersion,
-  "com.typesafe.akka" %% "akka-http" % AkkaHttpVersion,
-  "com.typesafe.akka" %% "akka-http-spray-json" % AkkaHttpVersion,
-  "com.typesafe.akka" %% "akka-http-caching" % AkkaHttpVersion,
-  "org.knowm.xchart" % "xchart" % "3.8.1" exclude("de.erichseifert.vectorgraphics2d", "VectorGraphics2D"),
-  "com.github.nscala-time" %% "nscala-time" % "2.30.0",
+  ("com.typesafe.akka" %% "akka-stream" % AkkaVersion).cross(CrossVersion.for3Use2_13),
+  ("com.typesafe.akka" %% "akka-http" % AkkaHttpVersion).cross(CrossVersion.for3Use2_13),
+  ("com.typesafe.akka" %% "akka-http-spray-json" % AkkaHttpVersion).cross(CrossVersion.for3Use2_13),
+  ("com.typesafe.akka" %% "akka-http-caching" % AkkaHttpVersion).cross(CrossVersion.for3Use2_13),
+  ("org.knowm.xchart" % "xchart" % "3.8.3" exclude("de.erichseifert.vectorgraphics2d", "VectorGraphics2D")),
+  "com.github.nscala-time" %% "nscala-time" % "2.32.0",
   "de.erichseifert.vectorgraphics2d" % "VectorGraphics2D" % "0.13",
-  "com.github.blemale" %% "scaffeine" % "5.1.2"
+  ("com.github.blemale" %% "scaffeine" % "5.2.1").cross(CrossVersion.for3Use2_13)
 )

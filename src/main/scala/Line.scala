@@ -16,7 +16,7 @@ object Line {
 }
 
 class Line(val username: String, val xData: Array[Int], val yData: Array[Int]) {
-  def getBytes: Array[Byte] = {
+  def draw(): ByteArrayOutputStream = {
     val height = 1024
     val width = 600
     val chart = new XYChartBuilder()
@@ -73,7 +73,6 @@ class Line(val username: String, val xData: Array[Int], val yData: Array[Int]) {
 
     // Axis
     style.setAxisTickLabelsColor(Color.BLACK)
-    //style.setYAxisLabelAlignment(Styler.TextAlignment.Right)
     val divider = if (xData.length * 0.5 < 1) 1 else (xData.length * 0.5).toInt
     style.setXAxisTickMarkSpacingHint(width / divider)
     style.setYAxisTickMarkSpacingHint(50)
@@ -84,6 +83,6 @@ class Line(val username: String, val xData: Array[Int], val yData: Array[Int]) {
 
     val os = new ByteArrayOutputStream()
     VectorGraphicsEncoder.saveVectorGraphic(chart, os, VectorGraphicsFormat.SVG)
-    os.toByteArray
+    os
   }
 }
